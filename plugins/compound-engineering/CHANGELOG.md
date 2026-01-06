@@ -5,6 +5,55 @@ All notable changes to the compound-engineering plugin will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-01-06
+
+### Breaking Changes
+
+- **Planning commands renamed to `/plan:*` namespace:**
+  - `/workflows:plan` → `/plan:compound` - Create comprehensive implementation plans
+  - `/deepen-plan` → `/plan:deepen` - Enhance plans with parallel research agents
+  - `/plan_review` → `/plan:review` - Multi-agent plan review in parallel
+- **Plan storage location:** Now saves to `~/.claude/plans/` to match Claude Code's built-in Plan Mode storage location
+
+### Added
+
+- **Backwards compatibility:** Old command names still work but show deprecation notice with redirect to new names
+- Deprecated commands in `commands/deprecated/` directory
+
+### Changed
+
+- Updated all cross-references in CLAUDE.md, README.md, and command files
+
+### Why?
+
+The `/plan:*` namespace groups all planning-related commands together for better discoverability. Using `~/.claude/plans/` aligns with Claude Code's Plan Mode behavior for consistency.
+
+### Summary
+
+- 27 agents, 20 commands, 13 skills, 2 MCP servers
+
+---
+
+## [2.22.2] - 2026-01-05
+
+### Changed
+
+- **`/feature-video` command** - Added collapsible screenshots template:
+  - Full template with clickable GIF + collapsible screenshot table
+  - Real example from PR #137 showing the pattern
+  - Screenshots-only template for simpler PRs
+  - Better tips for descriptive step names
+
+### Removed
+
+- **`imgup` skill references** - Replaced with `rclone` skill
+
+### Summary
+
+- 27 agents, 20 commands, 13 skills, 2 MCP servers
+
+---
+
 ## [2.22.0] - 2026-01-05
 
 ### Added

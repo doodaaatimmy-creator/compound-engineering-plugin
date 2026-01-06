@@ -69,13 +69,22 @@ Agents are organized into categories for easier discovery.
 
 ## Commands
 
+### Planning Commands
+
+Commands in the `/plan:*` namespace for all planning-related functionality:
+
+| Command | Description |
+|---------|-------------|
+| `/plan:compound` | Create comprehensive implementation plans |
+| `/plan:deepen` | Enhance plans with parallel research agents for each section |
+| `/plan:review` | Multi-agent plan review in parallel |
+
 ### Workflow Commands
 
 Core workflow commands use `workflows:` prefix to avoid collisions with built-in commands:
 
 | Command | Description |
 |---------|-------------|
-| `/workflows:plan` | Create implementation plans |
 | `/workflows:review` | Run comprehensive code reviews |
 | `/workflows:work` | Execute work items systematically |
 | `/workflows:compound` | Document solved problems to compound team knowledge |
@@ -84,12 +93,10 @@ Core workflow commands use `workflows:` prefix to avoid collisions with built-in
 
 | Command | Description |
 |---------|-------------|
-| `/deepen-plan` | Enhance plans with parallel research agents for each section |
 | `/changelog` | Create engaging changelogs for recent merges |
 | `/create-agent-skill` | Create or edit Claude Code skills |
 | `/generate_command` | Generate new slash commands |
 | `/heal-skill` | Fix skill documentation issues |
-| `/plan_review` | Multi-agent plan review in parallel |
 | `/report-bug` | Report a bug in the plugin |
 | `/reproduce-bug` | Reproduce bugs using logs and console |
 | `/resolve_parallel` | Resolve TODO comments in parallel |

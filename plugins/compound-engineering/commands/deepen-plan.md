@@ -1,5 +1,5 @@
 ---
-name: deepen-plan
+name: plan:deepen
 description: Enhance a plan with parallel research agents for each section to add depth, best practices, and implementation details
 argument-hint: "[path to plan file]"
 ---
@@ -10,7 +10,7 @@ argument-hint: "[path to plan file]"
 
 **Note: The current year is 2025.** Use this when searching for recent documentation and best practices.
 
-This command takes an existing plan (from `/workflows:plan`) and enhances each section with parallel research agents. Each major element gets its own dedicated research sub-agent to find:
+This command takes an existing plan (from `/plan:compound`) and enhances each section with parallel research agents. Each major element gets its own dedicated research sub-agent to find:
 - Best practices and industry patterns
 - Performance optimizations
 - UI/UX improvements (if applicable)
@@ -24,8 +24,8 @@ The result is a deeply grounded, production-ready plan with concrete implementat
 <plan_path> #$ARGUMENTS </plan_path>
 
 **If the plan path above is empty:**
-1. Check for recent plans: `ls -la plans/`
-2. Ask the user: "Which plan would you like to deepen? Please provide the path (e.g., `plans/my-feature.md`)."
+1. Check for recent plans: `ls -la ~/.claude/plans/`
+2. Ask the user: "Which plan would you like to deepen? Please provide the path (e.g., `~/.claude/plans/my-feature.md`)."
 
 Do not proceed until you have a valid plan file path.
 
@@ -480,21 +480,21 @@ After writing the enhanced plan, use the **AskUserQuestion tool** to present the
 
 **Options:**
 1. **View diff** - Show what was added/changed
-2. **Run `/plan_review`** - Get feedback from reviewers on enhanced plan
+2. **Run `/plan:review`** - Get feedback from reviewers on enhanced plan
 3. **Start `/workflows:work`** - Begin implementing this enhanced plan
 4. **Deepen further** - Run another round of research on specific sections
 5. **Revert** - Restore original plan (if backup exists)
 
 Based on selection:
 - **View diff** → Run `git diff [plan_path]` or show before/after
-- **`/plan_review`** → Call the /plan_review command with the plan file path
+- **`/plan:review`** → Call the /plan:review command with the plan file path
 - **`/workflows:work`** → Call the /workflows:work command with the plan file path
 - **Deepen further** → Ask which sections need more research, then re-run those agents
 - **Revert** → Restore from git or backup
 
 ## Example Enhancement
 
-**Before (from /workflows:plan):**
+**Before (from /plan:compound):**
 ```markdown
 ## Technical Approach
 

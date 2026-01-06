@@ -1,5 +1,5 @@
 ---
-name: workflows:plan
+name: plan:compound
 description: Transform feature descriptions into well-structured project plans following conventions
 argument-hint: "[feature description, bug report, or improvement idea]"
 ---
@@ -368,36 +368,38 @@ end
 
 ## Output Format
 
-Write the plan to `plans/<issue_title>.md`
+Write the plan to `~/.claude/plans/<issue_title>.md`
+
+**Note:** This matches Claude Code's built-in plan storage location. Plans are stored globally (not in project directory) to match Claude's Plan Mode behavior. Create the directory if it doesn't exist: `mkdir -p ~/.claude/plans`
 
 ## Post-Generation Options
 
 After writing the plan file, use the **AskUserQuestion tool** to present these options:
 
-**Question:** "Plan ready at `plans/<issue_title>.md`. What would you like to do next?"
+**Question:** "Plan ready at `~/.claude/plans/<issue_title>.md`. What would you like to do next?"
 
 **Options:**
 1. **Open plan in editor** - Open the plan file for review
-2. **Run `/deepen-plan`** - Enhance each section with parallel research agents (best practices, performance, UI)
-3. **Run `/plan_review`** - Get feedback from reviewers (DHH, Kieran, Simplicity)
+2. **Run `/plan:deepen`** - Enhance each section with parallel research agents (best practices, performance, UI)
+3. **Run `/plan:review`** - Get feedback from reviewers (DHH, Kieran, Simplicity)
 4. **Start `/workflows:work`** - Begin implementing this plan locally
 5. **Start `/workflows:work` on remote** - Begin implementing in Claude Code on the web (use `&` to run in background)
 6. **Create Issue** - Create issue in project tracker (GitHub/Linear)
 7. **Simplify** - Reduce detail level
 
 Based on selection:
-- **Open plan in editor** → Run `open plans/<issue_title>.md` to open the file in the user's default editor
-- **`/deepen-plan`** → Call the /deepen-plan command with the plan file path to enhance with research
-- **`/plan_review`** → Call the /plan_review command with the plan file path
+- **Open plan in editor** → Run `open ~/.claude/plans/<issue_title>.md` to open the file in the user's default editor
+- **`/plan:deepen`** → Call the /plan:deepen command with the plan file path to enhance with research
+- **`/plan:review`** → Call the /plan:review command with the plan file path
 - **`/workflows:work`** → Call the /workflows:work command with the plan file path
-- **`/workflows:work` on remote** → Run `/workflows:work plans/<issue_title>.md &` to start work in background for Claude Code web
+- **`/workflows:work` on remote** → Run `/workflows:work ~/.claude/plans/<issue_title>.md &` to start work in background for Claude Code web
 - **Create Issue** → See "Issue Creation" section below
 - **Simplify** → Ask "What should I simplify?" then regenerate simpler version
 - **Other** (automatically provided) → Accept free text for rework or specific changes
 
-**Note:** If running `/workflows:plan` with ultrathink enabled, automatically run `/deepen-plan` after plan creation for maximum depth and grounding.
+**Note:** If running `/plan:compound` with ultrathink enabled, automatically run `/plan:deepen` after plan creation for maximum depth and grounding.
 
-Loop back to options after Simplify or Other changes until user selects `/workflows:work` or `/plan_review`.
+Loop back to options after Simplify or Other changes until user selects `/workflows:work` or `/plan:review`.
 
 ## Issue Creation
 
@@ -411,13 +413,13 @@ When user selects "Create Issue", detect their project tracker from CLAUDE.md:
    ```bash
    # Extract title from plan filename (kebab-case to Title Case)
    # Read plan content for body
-   gh issue create --title "feat: [Plan Title]" --body-file plans/<issue_title>.md
+   gh issue create --title "feat: [Plan Title]" --body-file ~/.claude/plans/<issue_title>.md
    ```
 
 3. **If Linear:**
    ```bash
    # Use linear CLI if available, or provide instructions
-   # linear issue create --title "[Plan Title]" --description "$(cat plans/<issue_title>.md)"
+   # linear issue create --title "[Plan Title]" --description "$(cat ~/.claude/plans/<issue_title>.md)"
    ```
 
 4. **If no tracker configured:**
@@ -426,6 +428,6 @@ When user selects "Create Issue", detect their project tracker from CLAUDE.md:
 
 5. **After creation:**
    - Display the issue URL
-   - Ask if they want to proceed to `/workflows:work` or `/plan_review`
+   - Ask if they want to proceed to `/workflows:work` or `/plan:review`
 
 NEVER CODE! Just research and write the plan.

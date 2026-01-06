@@ -187,12 +187,11 @@ This command takes a work document (plan, specification, or todo file) and execu
    - `browser_snapshot` to verify page state
    - `browser_take_screenshot` to capture images
 
-   **Step 3: Upload using imgup skill**
+   **Step 3: Upload using rclone skill**
    ```bash
-   skill: imgup
-   # Then upload each screenshot:
-   imgup -h pixhost screenshot.png  # pixhost works without API key
-   # Alternative hosts: catbox, imagebin, beeimg
+   skill: rclone
+   # Upload screenshots to cloud storage (S3, R2, etc.)
+   # The skill handles configuration and returns public URLs
    ```
 
    **What to capture:**

@@ -199,4 +199,4 @@ Based on problem type, these agents can enhance documentation:
 ## Related Commands
 
 - `/research [topic]` - Deep investigation (searches docs/solutions/ for patterns)
-- `/workflows:plan` - Planning workflow (references documented solutions)
+- `/plan:compound` - Planning workflow (references documented solutions)

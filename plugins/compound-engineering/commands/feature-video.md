@@ -1,22 +1,23 @@
 ---
 name: feature-video
-description: Record a video walkthrough of a feature and add it to the PR description
+description: Record a video walkthrough or capture screenshots and add them to the PR description
 argument-hint: "[PR number or 'current'] [optional: base URL, default localhost:3000]"
 ---
 
-# Feature Video Walkthrough
+# Feature Video & Screenshots
 
-<command_purpose>Record a video walkthrough demonstrating a feature, upload it, and add it to the PR description.</command_purpose>
+<command_purpose>Record a video walkthrough or capture screenshots demonstrating a feature, upload them, and add to the PR description.</command_purpose>
 
 ## Introduction
 
-<role>Developer Relations Engineer creating feature demo videos</role>
+<role>Developer Relations Engineer creating feature demos</role>
 
-This command creates professional video walkthroughs of features for PR documentation:
+This command creates professional visual documentation for PRs:
 - Records browser interactions using Playwright video capture
+- Captures step-by-step screenshots for detailed walkthroughs
 - Demonstrates the complete user flow
-- Uploads the video for easy sharing
-- Updates the PR description with an embedded video
+- Uploads media for easy sharing
+- Updates the PR description with embedded video and/or collapsible screenshots
 
 ## Prerequisites
 
@@ -244,23 +245,72 @@ Preview: https://pub-4047722ebb1b4b09853f24d3b61467f1.r2.dev/pr-videos/pr-[numbe
 gh pr view [number] --json body -q '.body'
 ```
 
-**Add video section to PR description:**
+**Add demo section to PR description:**
 
-If the PR already has a video section, replace it. Otherwise, append:
+If the PR already has a demo section, replace it. Otherwise, append after Summary.
 
-**IMPORTANT:** GitHub cannot embed external MP4s directly. Use a clickable GIF that links to the video:
+**IMPORTANT:** GitHub cannot embed external MP4s directly. Use a clickable GIF that links to the video.
+
+**Full template with video + collapsible screenshots:**
 
 ```markdown
 ## Demo
 
 [![Feature Demo]([preview-gif-url])]([video-mp4-url])
 
-*Click to view full video*
+*Click GIF to view full video*
+
+<details>
+<summary>Screenshots</summary>
+
+| Step | Screenshot |
+|------|------------|
+| Starting point | ![Start]([screenshot-01-url]) |
+| Navigation | ![Navigate]([screenshot-02-url]) |
+| Feature action | ![Feature]([screenshot-03-url]) |
+| Result | ![Result]([screenshot-04-url]) |
+
+</details>
 ```
 
-Example:
+**Example (from a real PR):**
+
 ```markdown
-[![Feature Demo](https://pub-4047722ebb1b4b09853f24d3b61467f1.r2.dev/pr-videos/pr-137/feature-demo-preview.gif)](https://pub-4047722ebb1b4b09853f24d3b61467f1.r2.dev/pr-videos/pr-137/feature-demo.mp4)
+## Demo
+
+[![API Keys Demo](https://pub-4047722ebb1b4b09853f24d3b61467f1.r2.dev/pr-videos/pr-137-api-keys/api-keys-demo-small.gif)](https://pub-4047722ebb1b4b09853f24d3b61467f1.r2.dev/pr-videos/pr-137-api-keys/api-keys-demo.mp4)
+
+*Click GIF to view full video*
+
+<details>
+<summary>Screenshots</summary>
+
+| Step | Screenshot |
+|------|------------|
+| Home | ![Home](https://pub-4047722ebb1b4b09853f24d3b61467f1.r2.dev/pr-videos/pr-137-api-keys/screenshots/01-home.png) |
+| Account Menu | ![Menu](https://pub-4047722ebb1b4b09853f24d3b61467f1.r2.dev/pr-videos/pr-137-api-keys/screenshots/02-account-menu.png) |
+| API Keys Page | ![API Keys](https://pub-4047722ebb1b4b09853f24d3b61467f1.r2.dev/pr-videos/pr-137-api-keys/screenshots/03-api-keys-empty.png) |
+| Create Key Dialog | ![Create](https://pub-4047722ebb1b4b09853f24d3b61467f1.r2.dev/pr-videos/pr-137-api-keys/screenshots/04-create-key-dialog.png) |
+| Key Name Entered | ![Name](https://pub-4047722ebb1b4b09853f24d3b61467f1.r2.dev/pr-videos/pr-137-api-keys/screenshots/05-key-name-entered.png) |
+
+</details>
+```
+
+**Screenshots-only template (no video):**
+
+```markdown
+## Screenshots
+
+<details>
+<summary>View screenshots</summary>
+
+| Step | Screenshot |
+|------|------------|
+| Step 1 description | ![Step 1]([screenshot-url]) |
+| Step 2 description | ![Step 2]([screenshot-url]) |
+| Step 3 description | ![Step 3]([screenshot-url]) |
+
+</details>
 ```
 
 **Update the PR:**
@@ -300,25 +350,26 @@ echo "Video retained at: tmp/videos/feature-demo.gif"
 Present completion summary:
 
 ```markdown
-## Feature Video Complete
+## Feature Demo Complete
 
 **PR:** #[number] - [title]
 **Video:** [url or local path]
+**Screenshots:** [X] images uploaded
 **Duration:** ~[X] seconds
-**Format:** [GIF/MP4]
 
-### Shots Captured
+### Media Captured
 1. [Starting point] - [description]
 2. [Navigation] - [description]
 3. [Feature demo] - [description]
 4. [Result] - [description]
 
 ### PR Updated
-- [x] Video section added to PR description
+- [x] Demo section added with clickable GIF
+- [x] Collapsible screenshots table added
 - [ ] Ready for review
 
 **Next steps:**
-- Review the video to ensure it accurately demonstrates the feature
+- Review the demo to ensure it accurately shows the feature
 - Share with reviewers for context
 ```
 
@@ -342,7 +393,9 @@ Present completion summary:
 
 ## Tips
 
-- **Keep it short**: 10-30 seconds is ideal for PR demos
+- **Keep it short**: 10-30 seconds is ideal for PR video demos
 - **Focus on the change**: Don't include unrelated UI
 - **Show before/after**: If fixing a bug, show the broken state first (if possible)
-- **Annotate if needed**: Add text overlays for complex features
+- **Use descriptive step names**: In the screenshots table, use names like "Home", "Account Menu", "Create Dialog" - not "Step 1", "Step 2"
+- **Collapsible is key**: Screenshots in `<details>` keeps PR clean but accessible
+- **GIF links to video**: The clickable GIF pattern works great - reviewers see the preview, click for full quality
