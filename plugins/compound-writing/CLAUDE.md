@@ -40,7 +40,7 @@ See `docs/WRITING-ARCHITECTURE.md` for the complete framework mapping:
 | `every-style-editor` | Editing | Every's style guide |
 | `publishing-optimizer` | Optimization | SEO, social, newsletters |
 
-### Skills (8)
+### Skills (9)
 | Skill | Type | Purpose |
 |-------|------|---------|
 | `writing-orchestration` | Core | Two-agent architecture, strategies |
@@ -51,6 +51,7 @@ See `docs/WRITING-ARCHITECTURE.md` for the complete framework mapping:
 | `dhh-writing` | Voice | Direct, opinionated style |
 | `every-style-editor` | Style Guide | Mechanical editing (grammar, punctuation) |
 | `every-essay-guide` | Style Guide | Essay craft (worldview, best practices, hed/dek) |
+| `source-code-guide` | Style Guide | Source Code series (AI-era building, coining language) |
 
 ## Key Concepts
 
@@ -122,7 +123,7 @@ plugins/compound-writing/
 ├── README.md              # User documentation
 ├── agents/                # 7 agents
 ├── commands/              # 6 commands
-├── skills/                # 8 skills
+├── skills/                # 9 skills
 │   ├── writing-orchestration/
 │   │   ├── SKILL.md
 │   │   └── references/    # Baseline/situational strategies

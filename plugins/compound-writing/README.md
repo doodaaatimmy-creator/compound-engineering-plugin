@@ -99,7 +99,7 @@ claude /writing:compound drafts/debug-production/final.md
 | `publishing-optimizer` | Optimize for SEO, social media, newsletters |
 | `every-style-editor` | Review against Every's style guide |
 
-### Skills (8)
+### Skills (9)
 
 | Skill | Purpose |
 |-------|---------|
@@ -111,6 +111,7 @@ claude /writing:compound drafts/debug-production/final.md
 | `voice-capture` | Extract and encode voice profiles from samples |
 | `every-style-editor` | Every's mechanical style guide (grammar, punctuation) |
 | `every-essay-guide` | Every's essay craft (worldview, best practices, hed/dek playbook) |
+| `source-code-guide` | Every's Source Code series (AI-era building, coining language, technical narratives) |
 
 ## Core Systems
 
