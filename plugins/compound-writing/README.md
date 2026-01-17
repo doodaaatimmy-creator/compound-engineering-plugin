@@ -2,7 +2,7 @@
 
 > Each unit of writing work should make subsequent units easier—not harder.
 
-AI-powered writing tools that apply compound engineering principles to content creation. Just as [compound-engineering](../compound-engineering/) captures coding patterns to accelerate development, compound-writing captures voice, style, and editorial preferences to accelerate writing.
+AI-powered writing tools that apply compound engineering principles to content creation. Build a system that learns your voice, captures what works, and makes every piece of writing faster than the last.
 
 ## Installation
 
@@ -12,40 +12,80 @@ claude /plugin install compound-writing
 
 ## Philosophy
 
-**The 50/50 Rule**: Spend 50% improving your writing system (style guides, templates, voice documentation), 50% actually writing. This feels slow at first. Within weeks, the compounding becomes obvious.
+**The Compound Effect**: Every piece you write teaches the system. Patterns get captured, preferences get encoded, and your next piece benefits from everything before it.
 
-### The Compound Effect
-
-**Before Compound Writing:**
 ```
-Write → Edit → Publish → Start from scratch
-Write → Edit → Publish → Start from scratch
+Write → Feedback → Learn → Write (faster) → Feedback → Learn → Write (even faster)
 ```
 
-**After Compound Writing:**
-```
-Write → Edit → Capture patterns → Publish
-Write (faster) → Edit (patterns help) → Capture → Publish
-Write (faster still) → Minimal edit → Capture → Publish
-```
+**The 50/50 Rule**: Spend 50% improving your writing system (voice profiles, patterns, feedback), 50% actually writing. This feels slow at first. Within weeks, the compounding becomes obvious.
 
 ## Quick Start
 
 ```bash
-# Plan a new piece
+# 1. Plan a piece with research
 claude /writing:plan "How to debug production issues"
 
-# Draft from an outline
+# 2. Draft from the outline
 claude /writing:draft drafts/debug-production/outline.md
 
-# Run editorial review
+# 3. Give feedback on drafts
+claude /writing:feedback draft-2 love the opening stat
+claude /writing:feedback draft-1 too formal
+
+# 4. Refine based on feedback
+claude /writing:draft refine draft-2
+
+# 5. Run editorial review
 claude /writing:review drafts/debug-production/draft-v1.md
 
-# Capture what worked
+# 6. Capture what worked
 claude /writing:compound drafts/debug-production/final.md
 ```
 
+## The Complete Workflow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     COMPOUND WRITING FLOW                        │
+└─────────────────────────────────────────────────────────────────┘
+
+    ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
+    │  PLAN    │────▶│  DRAFT   │────▶│  REVIEW  │────▶│ COMPOUND │
+    └──────────┘     └──────────┘     └──────────┘     └──────────┘
+         │                │                │                │
+         ▼                ▼                ▼                ▼
+    Research &       3 Draft           Multi-Agent      Extract
+    Outline          Variations        Editorial        Patterns
+                          │
+                          ▼
+                   ┌──────────┐
+                   │ FEEDBACK │◀─── Real-time preference capture
+                   └──────────┘
+                          │
+                          ▼
+                   ┌──────────┐
+                   │SCRATCHPAD│◀─── Session memory
+                   └──────────┘
+                          │
+                          ▼
+                   ┌──────────┐
+                   │KNOWLEDGE │◀─── Permanent patterns
+                   └──────────┘
+```
+
 ## Components
+
+### Commands (6)
+
+| Command | Purpose |
+|---------|---------|
+| `/writing:plan` | Transform a topic into a researched outline with sources |
+| `/writing:draft` | Execute an outline into prose with 3 variations |
+| `/writing:review` | Multi-agent editorial review from every angle |
+| `/writing:feedback` | Capture real-time preferences into scratchpad |
+| `/writing:knowledge` | Manage voice profiles, patterns, and references |
+| `/writing:compound` | Extract patterns from successful writing |
 
 ### Agents (7)
 
@@ -55,83 +95,263 @@ claude /writing:compound drafts/debug-production/final.md
 | `fact-checker` | Verify claims, check statistics, ensure accuracy |
 | `structure-architect` | Create outlines, analyze flow, generate hooks |
 | `voice-guardian` | Maintain voice consistency, calibrate tone |
-| `clarity-editor` | Improve clarity, cut words, remove jargon, fix passive voice |
+| `clarity-editor` | Improve clarity, cut words, remove jargon |
 | `publishing-optimizer` | Optimize for SEO, social media, newsletters |
-| `every-style-editor` | Review and edit text against Every's style guide |
+| `every-style-editor` | Review against Every's style guide |
 
-### Commands (4)
-
-| Command | Purpose |
-|---------|---------|
-| `/writing:plan` | Transform a topic into a researched outline |
-| `/writing:draft` | Execute an outline into prose with style guidance |
-| `/writing:review` | Multi-agent editorial review |
-| `/writing:compound` | Capture patterns from successful writing |
-
-### Skills (5)
+### Skills (7)
 
 | Skill | Purpose |
 |-------|---------|
+| `writing-orchestration` | Two-agent architecture with strategies and quality gates |
+| `scratchpad` | Real-time feedback tracking for iterative refinement |
+| `context-notes` | Structured handoffs between commands |
 | `pragmatic-writing` | Write like Hunt/Thomas and Joel Spolsky |
 | `dhh-writing` | Write in DHH's direct, opinionated style |
 | `voice-capture` | Extract and encode voice profiles from samples |
-| `every-style-editor` | Review and edit copy against Every's style guide |
-| `writing-orchestration` | Two-agent orchestration with strategies and quality gates |
+| `every-style-editor` | Every's editorial style guide |
 
-## The Four-Phase Workflow
+## Core Systems
 
-### Phase 1: `/writing:plan` — Research & Outline
+### 1. The Scratchpad (Session Memory)
 
-Transform a topic into a structured outline with sources.
+The scratchpad captures your preferences in real-time:
 
-- **Parallel research**: Sources, audience, competitors
-- **Two-gate assessment**: Material sufficiency, message clarity
-- **Output**: `drafts/{slug}/outline.md`
+```bash
+# Mark what you like
+/writing:feedback draft-2 love the punchy opening
 
-### Phase 2: `/writing:draft` — Execute Outline
+# Mark what you don't
+/writing:feedback draft-1 too corporate, sounds like a press release
 
-Transform outline into prose following style preferences.
+# General preferences
+/writing:feedback general prefer short sentences, data-driven
+```
 
-- **Voice matching**: Apply voice profiles and style guides
-- **Producer-critic loop**: Voice guardian feedback until score ≥85
-- **Output**: `drafts/{slug}/draft-v1.md`
+The scratchpad builds a preference profile:
 
-### Phase 3: `/writing:review` — Multi-Agent Editorial
+```markdown
+## What Works ✓
+- Data-driven openings
+- Conversational tone
+- Short punchy sentences
 
-Exhaustive parallel review from multiple perspectives.
+## What Doesn't ✗
+- Corporate/formal language
+- Long paragraphs
+- Abstract concepts without examples
+```
 
-- **Core reviews**: Voice, clarity, facts, structure
-- **Style reviews**: Every, DHH, Pragmatic (based on context)
-- **Interactive triage**: Accept, skip, or customize each fix
+Every subsequent draft reads the scratchpad and adapts.
 
-### Phase 4: `/writing:compound` — Capture Patterns
+### 2. The Knowledge Base (Permanent Memory)
 
-Turn successful writing into permanent improvements.
+Your writing knowledge compounds over time:
 
-- **Extract patterns**: Hooks, structures, transitions, voice elements
-- **Update documentation**: Add to pattern library
-- **Create templates**: For similar future pieces
+```bash
+# Search for techniques
+/writing:knowledge search "hooks for technical content"
+
+# Add a new pattern
+/writing:knowledge add pattern "The Callback Close - end by referencing the opening"
+
+# Import your voice from samples
+/writing:knowledge import voice-profile my-best-posts/*.md
+```
+
+Knowledge structure:
+```
+.claude/writing-knowledge/
+├── voice-profiles/     # Your encoded voices
+├── patterns/           # Proven techniques
+│   ├── hooks/
+│   ├── structures/
+│   └── transitions/
+└── references/         # Style guides & exemplars
+```
+
+### 3. Context Notes (Handoff Protocol)
+
+Commands pass structured context to each other:
+
+```markdown
+<context_notes>
+## Research Summary
+Researched AI adoption. 73% of hospitals now use AI diagnostics.
+
+## Material Available
+- Stat: 73% hospital AI adoption
+- Case: Mayo Clinic 40% improvement
+- Quote: "AI is the stethoscope of the 21st century"
+
+## Message Clarity
+**Thesis**: AI diagnostics are becoming standard of care
+**Audience**: Hospital administrators
+**Desired Action**: Request a demo
+
+## Voice Configuration
+**Profile**: kieran-blog
+**Channel**: blog
+
+## Mode
+EXPLORATION
+</context_notes>
+```
+
+### 4. Draft ID Tracking
+
+Every draft gets a unique, persistent ID:
+
+```
+Response 1: draft-1, draft-2, draft-3  (exploration)
+Response 2: draft-4, draft-5, draft-6  (new exploration)
+Response 3: draft-2 refined            (keeps original ID)
+```
+
+Reference specific drafts in feedback:
+```bash
+/writing:feedback draft-2 perfect opening
+/writing:draft refine draft-2
+```
+
+## Two-Agent Architecture
+
+Complex writing benefits from separation of concerns:
+
+### Orchestrator Role
+- Classifies requests (research vs. content)
+- Applies two-gate assessment
+- Gathers materials and context
+- Hands off when ready
+
+### Writer Role
+- Creates drafts using strategies
+- Applies voice profiles
+- Produces 3 variations (exploration) or 1 (refinement)
+- Incorporates scratchpad preferences
+
+### Two-Gate Assessment
+
+Before any content creation:
+
+**Gate 1: Material Sufficiency**
+> "Could we create this without inventing facts?"
+- ✓ Have concrete examples
+- ✓ Have data/statistics
+- ✗ Would need to make things up
+
+**Gate 2: Message Clarity**
+> "Do we know exactly what message to convey?"
+- ✓ Clear thesis
+- ✓ Specific audience
+- ✗ Vague "write about this"
+
+## Writing Strategies
+
+### 10 Baseline Strategies (Always Apply)
+
+| Strategy | Rule |
+|----------|------|
+| reader-zero-context | Add orienting phrases for unfamiliar terms |
+| subject-verb-first | Subject + verb in first 5 words |
+| activate-verbs | Precise verbs over is/was |
+| watch-adverbs | Let strong verbs carry the load |
+| limit-ings | Simple tense over continuous |
+| prefer-simple | Everyday language unless technical |
+| cut-big-small | Edit hierarchically (paragraphs → sentences → words) |
+| ban-empty-hypophora | No self-answered questions |
+| present-active-tense | Direct, immediate language |
+| one-idea-per-sentence | Single clear point per sentence |
+
+### 20+ Situational Strategies (Select 3-4)
+
+**Hooks**: hook-effectiveness, tension-builder, pattern-twist
+**Structure**: ladder-abstraction, sentence-length, paragraph-length
+**Style**: elegant-variation, punctuation-pace, key-words-space
+**Narrative**: narrate-scenes, cinematic-angles, reveal-traits
+
+## Modes: Exploration vs. Refinement
+
+### Exploration Mode (3 Drafts)
+When to use:
+- New content request
+- "Show me different options"
+- Unsure about direction
+
+What happens:
+- Creates exactly 3 variations
+- Each with a different angle/approach
+- User picks one to refine
+
+### Refinement Mode (1 Draft)
+When to use:
+- User selected a specific draft
+- "Make this punchier"
+- Clear direction established
+
+What happens:
+- Works on single draft
+- Keeps original draft ID
+- Applies specific feedback
+
+## Example Session
+
+```bash
+# Start with a topic
+$ claude /writing:plan "Why most code reviews are useless"
+
+# Plan creates outline.md and sources.md
+# Context notes passed forward
+
+$ claude /writing:draft drafts/code-reviews/outline.md
+
+# Creates draft-1, draft-2, draft-3
+# Each with different angle
+
+$ claude /writing:feedback draft-2 the opening hook is fire
+$ claude /writing:feedback draft-1 too academic
+
+# Scratchpad learns: prefer punchy hooks, avoid academic tone
+
+$ claude /writing:draft refine draft-2
+
+# Creates refined draft-2 using scratchpad preferences
+
+$ claude /writing:review draft-2
+
+# Parallel agents check: voice, clarity, facts, structure
+# Returns prioritized issues
+
+$ claude /writing:feedback draft-2 perfect
+
+$ claude /writing:compound draft-2
+
+# Extracts winning patterns to knowledge base:
+# - The hook formula used
+# - The structure that worked
+# - The voice elements that landed
+```
 
 ## Voice Profiles
 
-Voice profiles encode writing style in three layers:
+Encode your writing style in a profile:
 
 ```yaml
 voice:
   name: "kieran-blog"
 
-  # Layer 1: Immutable Traits
+  # Immutable traits
   traits: [direct, conversational, technically-informed]
   register: informal
-  prohibited: ["synergy", passive voice in openings]
+  prohibited: ["synergy", "leverage", passive voice in openings]
 
-  # Layer 2: Channel Guidance
+  # Channel guidance
   channels:
     blog: "longer form, storytelling allowed"
     social: "punchy, hooks required"
     newsletter: "personality forward"
 
-  # Layer 3: Example Library
+  # Example library
   exemplars:
     - path: "samples/great-opening.md"
       why: "Concrete example first, theory second"
@@ -139,39 +359,75 @@ voice:
 
 ## Quality Gates
 
-### Gate 1: Material Sufficiency
-"Could the writer create this without inventing facts?"
+### Pre-Draft
+- [ ] Material sufficiency verified
+- [ ] Message clarity confirmed
+- [ ] Voice profile loaded
 
-### Gate 2: Message Clarity
-"Do we know the specific message to convey?"
+### Post-Draft
+- [ ] Opening hooks in first 50 words
+- [ ] No paragraph over 4 sentences
+- [ ] Concrete example in each section
+- [ ] All claims supported
+- [ ] Voice score ≥ 85
 
-### Gate 3: Style Compliance
-"Does it match the voice and style guide?"
+### Post-Review
+- [ ] Critical issues addressed
+- [ ] Important issues triaged
+- [ ] Voice consistency verified
 
-### Gate 4: Factual Accuracy
-"Are all claims supported?"
+## Pattern Library
 
-## Pattern Capture System
-
-Patterns are stored in `docs/patterns/`:
+Patterns are stored and searchable:
 
 ```
 docs/patterns/
-├── common-patterns.md     # Index
-├── hooks/                 # Hook formulas that work
-├── structures/            # Successful article structures
-├── transitions/           # Transition phrases that flow
-└── voice/                 # Voice pattern captures
+├── hooks/              # Opening formulas
+│   └── stat-surprise.md
+├── structures/         # Article architectures
+│   └── problem-solution.md
+├── transitions/        # Flow techniques
+└── closings/           # Ending formulas
+    └── callback-close.md
 ```
+
+Each pattern includes:
+- Formula with placeholders
+- Usage count and success rate
+- Examples from your writing
+- When to use / when to avoid
 
 ## Integration with Compound Engineering
 
 This plugin complements the compound-engineering plugin:
 
-- **compound-engineering**: Code, systems, development workflows
-- **compound-writing**: Content, prose, editorial workflows
+| compound-engineering | compound-writing |
+|---------------------|------------------|
+| Code, systems, dev workflows | Content, prose, editorial |
+| Code review agents | Editorial review agents |
+| Pattern capture for code | Pattern capture for prose |
 
-Both follow the same philosophy: each unit of work should make the next easier.
+Both follow the same philosophy: each unit of work makes the next easier.
+
+## File Structure
+
+```
+project/
+├── .claude/
+│   └── writing-knowledge/
+│       ├── voice-profiles/
+│       ├── patterns/
+│       └── references/
+└── drafts/
+    ├── .scratchpad.md      # Session feedback
+    ├── .context.md         # Persistent context
+    └── [slug]/
+        ├── outline.md
+        ├── sources.md
+        ├── draft-v1.md
+        ├── draft-v2.md
+        └── review-v1.md
+```
 
 ## License
 

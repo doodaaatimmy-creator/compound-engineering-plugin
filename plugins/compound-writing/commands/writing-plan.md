@@ -152,6 +152,37 @@ drafts/
     └── sources.md          # Source list with citations
 ```
 
+## Context Notes Output
+
+After creating the outline, output context notes for handoff to `/writing:draft`:
+
+```markdown
+<context_notes>
+## Research Summary
+[2-3 sentences summarizing the research phase]
+
+## Material Available
+- [Concrete example 1]
+- [Data point 1]
+- [Quote or source 1]
+
+## Message Clarity
+**Thesis**: [One sentence thesis]
+**Audience**: [Specific audience]
+**Desired Action**: [What reader should do]
+
+## Voice Configuration
+**Profile**: [voice profile name or "infer"]
+**Style Guide**: [style guide name or "none"]
+**Channel**: [blog/newsletter/social/docs]
+
+## Mode
+EXPLORATION
+</context_notes>
+```
+
+These notes pass to the draft command for seamless handoff.
+
 ## Post-Planning Options
 
 After creating the outline, use AskUserQuestion:

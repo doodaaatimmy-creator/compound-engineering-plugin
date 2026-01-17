@@ -12,6 +12,8 @@ Execute an outline into prose, following style preferences and voice profiles.
 
 <outline_path> #$ARGUMENTS </outline_path>
 
+If the input is "refine [draft-ID]", enter REFINEMENT mode with that specific draft.
+
 ## Workflow Overview
 
 This command executes the **drafting phase**:
@@ -22,6 +24,24 @@ This command executes the **drafting phase**:
 5. Quality checkpoints
 
 ## Phase 1: Load Context
+
+### Read Context Notes
+If context notes were passed from `/writing:plan`, extract:
+- Research summary
+- Material available
+- Message clarity (thesis, audience, action)
+- Voice configuration
+- Mode (EXPLORATION or REFINEMENT)
+
+### Read Scratchpad
+Check `drafts/.scratchpad.md` for session preferences:
+```
+If scratchpad exists:
+  - Load "What Works ✓" patterns
+  - Load "What Doesn't ✗" anti-patterns
+  - Apply recency weighting (recent feedback > older)
+  - Use preference profile to guide strategy selection
+```
 
 ### Read Outline and Research
 ```
@@ -195,3 +215,46 @@ After creating draft, use AskUserQuestion:
 - Review outline section estimates
 - Cut less essential sections for shorter
 - Expand examples for longer
+
+## Draft ID Management
+
+Every draft gets a unique, persistent ID:
+
+```
+Response 1: draft-1, draft-2, draft-3  (exploration)
+Response 2: draft-4, draft-5, draft-6  (new exploration)
+Response 3: draft-2 refined            (keeps original ID)
+```
+
+- IDs persist across the session
+- Never reuse IDs
+- Refinements keep original draft ID
+- New explorations increment
+
+## Context Notes Output
+
+After creating drafts, output context notes for handoff:
+
+```markdown
+<context_notes>
+## Draft Status
+- Version: [draft-v1]
+- Word count: [count]
+- Voice score: [score] (target: 85)
+- Drafts created: [count] (user selected: [ID if applicable])
+
+## Strategies Applied
+- Baseline: All 10 applied
+- Situational: [strategy-1], [strategy-2], [strategy-3]
+
+## Known Issues
+- [Any identified weaknesses]
+
+## Scratchpad Summary
+- ✓ [Preference applied from scratchpad]
+- ✗ [Anti-pattern avoided from scratchpad]
+
+## Mode
+[EXPLORATION or REFINEMENT]
+</context_notes>
+```

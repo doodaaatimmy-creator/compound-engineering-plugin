@@ -190,12 +190,34 @@ When user provides feedback:
 
 ### Orchestrator → Writer
 
-```
-[Research summary if applicable - 2-3 sentences]
-[Material gathered: list key assets]
-[Message clarity: thesis statement]
-[Style guide: name if applicable]
-[Mode: EXPLORATION or REFINEMENT]
+Use the context notes format for structured handoffs:
+
+```markdown
+<context_notes>
+## Research Summary
+[2-3 sentences summarizing research]
+
+## Material Available
+- [Concrete example 1]
+- [Data point 1]
+- [Quote or source 1]
+
+## Message Clarity
+**Thesis**: [One sentence thesis]
+**Audience**: [Specific audience]
+**Desired Action**: [What reader should do]
+
+## Voice Configuration
+**Profile**: [voice profile name or "infer"]
+**Style Guide**: [style guide name or "none"]
+**Channel**: [blog/newsletter/social/docs]
+
+## Mode
+[EXPLORATION or REFINEMENT]
+
+## Scratchpad Summary
+[Key preferences from session scratchpad]
+</context_notes>
 ```
 
 ### Writer → Orchestrator (Rare)
@@ -205,6 +227,49 @@ Only when:
 - New research topic needed
 - Web search required
 - Significant scope change
+
+## Scratchpad Integration
+
+The scratchpad (`drafts/.scratchpad.md`) captures real-time preferences:
+
+### Reading Scratchpad
+Before creating drafts:
+1. Load scratchpad preference profile
+2. Extract "What Works ✓" patterns
+3. Extract "What Doesn't ✗" anti-patterns
+4. Apply recency weighting (newer feedback > older)
+5. Use to guide strategy selection
+
+### Writing to Scratchpad
+After receiving feedback via `/writing:feedback`:
+1. Parse feedback for sentiment
+2. Categorize (voice, structure, content, style)
+3. Extract actionable principle
+4. Append to log
+5. Regenerate preference profile
+
+### Promoting to Patterns
+Via `/writing:compound`:
+1. Identify recurring preferences (3+ appearances)
+2. Extract to pattern library
+3. Add to voice profile
+4. Clear promoted entries from scratchpad
+
+## Draft ID Management
+
+Every draft gets a unique, persistent ID:
+
+```
+Response 1: draft-1, draft-2, draft-3  (exploration)
+Response 2: draft-4, draft-5, draft-6  (new exploration)
+Response 3: draft-2 refined            (keeps original ID)
+```
+
+Rules:
+- IDs persist across the session
+- Never reuse IDs
+- Refinements keep original draft ID
+- New explorations increment
 
 ## Integration with Commands
 

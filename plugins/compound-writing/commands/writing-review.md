@@ -33,6 +33,22 @@ Extract:
 - Word count
 - Style used
 - Voice profile (if any)
+- Draft ID (e.g., draft-2)
+```
+
+### Read Context Notes
+If context notes were passed from `/writing:draft`:
+- Load strategies applied
+- Check known issues
+- Load scratchpad summary
+
+### Read Scratchpad
+Check `drafts/.scratchpad.md` for session preferences:
+```
+If scratchpad exists:
+  - Load preference profile
+  - Use "What Works ✓" to validate draft alignment
+  - Flag "What Doesn't ✗" violations as issues
 ```
 
 ### Load Review Context
@@ -256,3 +272,31 @@ Review is complete when:
 - [ ] All claims verified or flagged
 - [ ] Flow analysis passed
 - [ ] Style guide compliance checked
+- [ ] Scratchpad preferences honored
+
+## Context Notes Output
+
+After review, output context notes for handoff to revision:
+
+```markdown
+<context_notes>
+## Review Summary
+- Critical issues: [count]
+- Important issues: [count]
+- Polish issues: [count]
+
+## Accepted Fixes
+1. [Fix 1 description]
+2. [Fix 2 description]
+
+## Rejected Fixes
+1. [Rejected fix with reason]
+
+## Scratchpad Updates
+- New preference learned: [if applicable]
+- Conflict detected: [if applicable]
+
+## Mode
+REFINEMENT (working on [draft-ID])
+</context_notes>
+```

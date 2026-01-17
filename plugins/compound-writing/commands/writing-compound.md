@@ -39,10 +39,12 @@ This command extracts what worked and encodes it for reuse:
 Read the final published version
 Read all draft versions (v1, v2, etc.)
 Read review reports
+Read scratchpad (drafts/.scratchpad.md) for session feedback
 Identify:
 - What changed between drafts
 - What reviewers praised
 - What the writer kept unchanged
+- What the scratchpad marked as "What Works ✓"
 ```
 
 ### Identify What Worked
@@ -309,10 +311,38 @@ Next similar piece will benefit from: [specific improvements]
 3. **Review pattern library** - See all accumulated patterns
 4. **Export voice profile** - Save voice profile for sharing
 
+## Phase 6: Promote Scratchpad to Patterns
+
+### Persist Session Learnings
+From the scratchpad, promote recurring preferences to permanent patterns:
+
+```
+If preference appeared 3+ times in scratchpad:
+  - Extract to pattern library
+  - Add to voice profile
+  - Clear from scratchpad
+```
+
+### Update Knowledge Base
+Add to `.claude/writing-knowledge/`:
+- New patterns discovered
+- Voice profile refinements
+- Anti-patterns to avoid
+
+### Clear Session Scratchpad
+After compounding:
+- Archive scratchpad entries that were promoted
+- Keep only session-specific notes
+- Reset for next writing session
+
 ## The Compound Loop
 
 ```
-Write → Review → Edit → Compound →
+Write → Feedback → Review → Edit → Compound →
+  ↓
+Scratchpad captures preferences
+  ↓
+Compound promotes patterns to knowledge
   ↓
 Next piece starts with more patterns
   ↓
