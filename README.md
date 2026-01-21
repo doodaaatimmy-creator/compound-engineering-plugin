@@ -27,7 +27,7 @@ bun run src/index.ts install compound-engineering --to codex --output .
 ```
 
 Converted output is written to `opencode.json` plus `.opencode/agents` (and `.opencode/skills`).
-Codex output is written to `.codex/prompts` and `.codex/skills`, with each Claude command converted into both a prompt and a skill (the prompt instructs Codex to load the corresponding skill). Generated Codex skill descriptions are truncated to 1024 characters to satisfy Codex limits.
+Codex output is written to `.codex/prompts` and `.codex/skills`, with each Claude command converted into both a prompt and a skill (the prompt instructs Codex to load the corresponding skill). Generated Codex skill descriptions are truncated to 1024 characters (Codex limit).
 To install prompts/skills globally for `/prompts:<name>` and `/skills`, pass `--codex-home ~/.codex`.
 
 ## Workflow

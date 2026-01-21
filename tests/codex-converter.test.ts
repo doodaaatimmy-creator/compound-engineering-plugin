@@ -89,8 +89,8 @@ describe("convertClaudeToCodex", () => {
     expect(bundle.mcpServers?.local?.args).toEqual(["hello"])
   })
 
-  test("truncates generated skill descriptions to 1024 chars", () => {
-    const longDescription = "a".repeat(1100)
+  test("truncates generated skill descriptions to Codex limits and single line", () => {
+    const longDescription = `Line one\nLine two ${"a".repeat(2000)}`
     const plugin: ClaudePlugin = {
       ...fixturePlugin,
       agents: [
@@ -115,6 +115,7 @@ describe("convertClaudeToCodex", () => {
     const parsed = parseFrontmatter(generated.content)
     const description = String(parsed.data.description ?? "")
     expect(description.length).toBeLessThanOrEqual(1024)
+    expect(description).not.toContain("\n")
     expect(description.endsWith("...")).toBe(true)
   })
 })

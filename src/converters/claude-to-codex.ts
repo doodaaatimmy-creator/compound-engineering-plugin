@@ -5,6 +5,8 @@ import type { ClaudeToOpenCodeOptions } from "./claude-to-opencode"
 
 export type ClaudeToCodexOptions = ClaudeToOpenCodeOptions
 
+const CODEX_DESCRIPTION_MAX_LENGTH = 1024
+
 export function convertClaudeToCodex(
   plugin: ClaudePlugin,
   _options: ClaudeToCodexOptions,
@@ -100,10 +102,8 @@ function normalizeName(value: string): string {
   return normalized || "item"
 }
 
-function sanitizeDescription(value: string, maxLength = 1024): string {
-  const trimmed = value.trim()
-  if (trimmed.length <= maxLength) return trimmed
-  const normalized = trimmed.replace(/\\s+/g, " ")
+function sanitizeDescription(value: string, maxLength = CODEX_DESCRIPTION_MAX_LENGTH): string {
+  const normalized = value.replace(/\s+/g, " ").trim()
   if (normalized.length <= maxLength) return normalized
   const ellipsis = "..."
   return normalized.slice(0, Math.max(0, maxLength - ellipsis.length)).trimEnd() + ellipsis

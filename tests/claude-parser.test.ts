@@ -5,6 +5,9 @@ import { loadClaudePlugin } from "../src/parsers/claude"
 const fixtureRoot = path.join(import.meta.dir, "fixtures", "sample-plugin")
 const mcpFixtureRoot = path.join(import.meta.dir, "fixtures", "mcp-file")
 const customPathsRoot = path.join(import.meta.dir, "fixtures", "custom-paths")
+const invalidCommandPathRoot = path.join(import.meta.dir, "fixtures", "invalid-command-path")
+const invalidHooksPathRoot = path.join(import.meta.dir, "fixtures", "invalid-hooks-path")
+const invalidMcpPathRoot = path.join(import.meta.dir, "fixtures", "invalid-mcp-path")
 
 describe("loadClaudePlugin", () => {
   test("loads manifest, agents, commands, skills, hooks", async () => {
@@ -53,5 +56,23 @@ describe("loadClaudePlugin", () => {
     expect(plugin.skills.map((skill) => skill.name).sort()).toEqual(["custom-skill", "default-skill"])
     expect(plugin.hooks?.hooks.PreToolUse?.[0]?.hooks[0]?.command).toBe("echo default")
     expect(plugin.hooks?.hooks.PostToolUse?.[0]?.hooks[0]?.command).toBe("echo custom")
+  })
+
+  test("rejects custom component paths that escape the plugin root", async () => {
+    await expect(loadClaudePlugin(invalidCommandPathRoot)).rejects.toThrow(
+      "Invalid commands path: ../outside-commands. Paths must stay within the plugin root.",
+    )
+  })
+
+  test("rejects hook paths that escape the plugin root", async () => {
+    await expect(loadClaudePlugin(invalidHooksPathRoot)).rejects.toThrow(
+      "Invalid hooks path: ../outside-hooks.json. Paths must stay within the plugin root.",
+    )
+  })
+
+  test("rejects MCP paths that escape the plugin root", async () => {
+    await expect(loadClaudePlugin(invalidMcpPathRoot)).rejects.toThrow(
+      "Invalid mcpServers path: ../outside-mcp.json. Paths must stay within the plugin root.",
+    )
   })
 })

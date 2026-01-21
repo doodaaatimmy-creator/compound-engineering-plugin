@@ -126,7 +126,7 @@ async function loadHooks(root: string, hooksField?: ClaudeManifest["hooks"]): Pr
     if (typeof hooksField === "string" || Array.isArray(hooksField)) {
       const hookPaths = toPathList(hooksField)
       for (const hookPath of hookPaths) {
-        const resolved = path.join(root, hookPath)
+        const resolved = resolveWithinRoot(root, hookPath, "hooks path")
         if (await pathExists(resolved)) {
           hookConfigs.push(await readJson<ClaudeHooks>(resolved))
         }
@@ -181,7 +181,7 @@ function resolveComponentDirs(
 ): string[] {
   const dirs = [path.join(root, defaultDir)]
   for (const entry of toPathList(custom)) {
-    dirs.push(path.join(root, entry))
+    dirs.push(resolveWithinRoot(root, entry, `${defaultDir} path`))
   }
   return dirs
 }
@@ -226,7 +226,7 @@ async function loadMcpPaths(
 ): Promise<Record<string, ClaudeMcpServer>[]> {
   const configs: Record<string, ClaudeMcpServer>[] = []
   for (const entry of toPathList(value)) {
-    const resolved = path.join(root, entry)
+    const resolved = resolveWithinRoot(root, entry, "mcpServers path")
     if (await pathExists(resolved)) {
       configs.push(await readJson<Record<string, ClaudeMcpServer>>(resolved))
     }
@@ -236,4 +236,13 @@ async function loadMcpPaths(
 
 function mergeMcpConfigs(configs: Record<string, ClaudeMcpServer>[]): Record<string, ClaudeMcpServer> {
   return configs.reduce((acc, config) => ({ ...acc, ...config }), {})
+}
+
+function resolveWithinRoot(root: string, entry: string, label: string): string {
+  const resolvedRoot = path.resolve(root)
+  const resolvedPath = path.resolve(root, entry)
+  if (resolvedPath === resolvedRoot || resolvedPath.startsWith(resolvedRoot + path.sep)) {
+    return resolvedPath
+  }
+  throw new Error(`Invalid ${label}: ${entry}. Paths must stay within the plugin root.`)
 }
