@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **`/workflows:plan` command** - Smarter research decision logic before deep dives (#100)
 - **Research checks** - Mandatory API deprecation validation in research flows (#102)
+- **Docs** - Call out experimental OpenCode/Codex providers and install defaults
 
 ### Merged PRs
 
