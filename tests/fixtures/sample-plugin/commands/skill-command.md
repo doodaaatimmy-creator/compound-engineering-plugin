@@ -1,7 +1,7 @@
 ---
-name: skill-command
-description: Command with skill tool
+name: create-agent-skill
+description: Create or edit a Claude Code skill
 allowed-tools: Skill(create-agent-skills)
 ---
 
-Skill command body.
+Create agent skill body.

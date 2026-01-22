@@ -1,8 +1,8 @@
 ---
-name: model-command
-description: Command with model
+name: workflows:work
+description: Execute planned tasks step by step
 model: gpt-4o
 allowed-tools: WebFetch
 ---
 
-Model command body.
+Workflows work body.

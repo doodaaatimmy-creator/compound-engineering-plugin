@@ -14,21 +14,22 @@ A Claude Code plugin marketplace featuring the **Compound Engineering Plugin** â
 This repo includes a Bun/TypeScript CLI that converts Claude Code plugins to OpenCode and Codex.
 
 ```bash
-# list local plugins
-bunx @every-env/compound-plugin list
-
 # convert the compound-engineering plugin into OpenCode format
-bunx @every-env/compound-plugin install compound-engineering --to opencode --output .
+bunx @every-env/compound-plugin install compound-engineering --to opencode
 
 # convert to Codex format
-bunx @every-env/compound-plugin install compound-engineering --to codex --output .
+bunx @every-env/compound-plugin install compound-engineering --to codex
 ```
 
-Converted output is written to `opencode.json` plus `.opencode/agents` (and `.opencode/skills`).
-`install` defaults the output root to `~/.opencode` unless you pass `--output`.
+Local dev:
+
+```bash
+bun run src/index.ts install ./plugins/compound-engineering --to opencode
+```
+
+OpenCode output is written to `~/.opencode` by default, with `opencode.json` at the root and `agents/`, `skills/`, and `plugins/` alongside it.
 Both provider targets are experimental and may change as the formats evolve.
-Codex output is written to `.codex/prompts` and `.codex/skills`, with each Claude command converted into both a prompt and a skill (the prompt instructs Codex to load the corresponding skill). Generated Codex skill descriptions are truncated to 1024 characters (Codex limit).
-To install prompts/skills globally for `/prompts:<name>` and `/skills`, pass `--codex-home ~/.codex`.
+Codex output is written to `~/.codex/prompts` and `~/.codex/skills`, with each Claude command converted into both a prompt and a skill (the prompt instructs Codex to load the corresponding skill). Generated Codex skill descriptions are truncated to 1024 characters (Codex limit).
 
 ## Workflow
 

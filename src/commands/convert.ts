@@ -27,7 +27,6 @@ export default defineCommand({
     output: {
       type: "string",
       alias: "o",
-      default: ".",
       description: "Output directory (project root)",
     },
     codexHome: {
@@ -72,8 +71,8 @@ export default defineCommand({
     }
 
     const plugin = await loadClaudePlugin(String(args.source))
-    const outputRoot = path.resolve(String(args.output))
-    const codexHome = resolveCodexHome(args.codexHome)
+    const outputRoot = resolveOutputRoot(args.output)
+    const codexHome = resolveCodexRoot(args.codexHome)
 
     const options = {
       agentMode: String(args.agentMode) === "primary" ? "primary" : "subagent",
@@ -115,7 +114,7 @@ export default defineCommand({
     }
 
     if (allTargets.includes("codex")) {
-      await ensureCodexAgentsFile(resolveCodexAgentsHome(codexHome))
+      await ensureCodexAgentsFile(codexHome)
     }
   },
 })
@@ -136,9 +135,8 @@ function resolveCodexHome(value: unknown): string | null {
   return path.resolve(expanded)
 }
 
-function resolveCodexAgentsHome(codexHome: string | null): string {
-  if (codexHome) return codexHome
-  return path.join(os.homedir(), ".codex")
+function resolveCodexRoot(value: unknown): string {
+  return resolveCodexHome(value) ?? path.join(os.homedir(), ".codex")
 }
 
 function expandHome(value: string): string {
@@ -147,4 +145,12 @@ function expandHome(value: string): string {
     return path.join(os.homedir(), value.slice(2))
   }
   return value
+}
+
+function resolveOutputRoot(value: unknown): string {
+  if (value && String(value).trim()) {
+    const expanded = expandHome(String(value).trim())
+    return path.resolve(expanded)
+  }
+  return process.cwd()
 }

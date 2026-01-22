@@ -1,7 +1,7 @@
 ---
-name: command-one
-description: Command one
-allowed-tools: Read, Write, Bash(ls:*), Bash(git:*)
+name: workflows:review
+description: Run a multi-agent review workflow
+allowed-tools: Read, Write, Edit, Bash(ls:*), Bash(git:*), Grep, Glob, List, Patch, Task
 ---
 
-Command one body.
+Workflows review body.

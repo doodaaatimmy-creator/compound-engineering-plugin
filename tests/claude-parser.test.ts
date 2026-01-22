@@ -13,35 +13,46 @@ describe("loadClaudePlugin", () => {
   test("loads manifest, agents, commands, skills, hooks", async () => {
     const plugin = await loadClaudePlugin(fixtureRoot)
 
-    expect(plugin.manifest.name).toBe("sample-plugin")
+    expect(plugin.manifest.name).toBe("compound-engineering")
     expect(plugin.agents.length).toBe(2)
     expect(plugin.commands.length).toBe(6)
     expect(plugin.skills.length).toBe(1)
     expect(plugin.hooks).toBeDefined()
     expect(plugin.mcpServers).toBeDefined()
 
-    const agentOne = plugin.agents.find((agent) => agent.name === "agent-one")
-    expect(agentOne?.capabilities).toEqual(["Capability A", "Capability B"])
+    const researchAgent = plugin.agents.find((agent) => agent.name === "repo-research-analyst")
+    expect(researchAgent?.capabilities).toEqual(["Capability A", "Capability B"])
 
-    const commandOne = plugin.commands.find((command) => command.name === "command-one")
-    expect(commandOne?.allowedTools).toEqual(["Read", "Write", "Bash(ls:*)", "Bash(git:*)"])
+    const reviewCommand = plugin.commands.find((command) => command.name === "workflows:review")
+    expect(reviewCommand?.allowedTools).toEqual([
+      "Read",
+      "Write",
+      "Edit",
+      "Bash(ls:*)",
+      "Bash(git:*)",
+      "Grep",
+      "Glob",
+      "List",
+      "Patch",
+      "Task",
+    ])
 
-    const commandTwo = plugin.commands.find((command) => command.name === "command-two")
-    expect(commandTwo?.allowedTools).toEqual(["Read", "Edit"])
+    const planReview = plugin.commands.find((command) => command.name === "plan_review")
+    expect(planReview?.allowedTools).toEqual(["Read", "Edit"])
 
-    const skillCommand = plugin.commands.find((command) => command.name === "skill-command")
+    const skillCommand = plugin.commands.find((command) => command.name === "create-agent-skill")
     expect(skillCommand?.allowedTools).toEqual(["Skill(create-agent-skills)"])
 
-    const modelCommand = plugin.commands.find((command) => command.name === "model-command")
+    const modelCommand = plugin.commands.find((command) => command.name === "workflows:work")
     expect(modelCommand?.allowedTools).toEqual(["WebFetch"])
 
-    const patternCommand = plugin.commands.find((command) => command.name === "pattern-command")
+    const patternCommand = plugin.commands.find((command) => command.name === "report-bug")
     expect(patternCommand?.allowedTools).toEqual(["Read(.env)", "Bash(git:*)"])
 
-    const todoCommand = plugin.commands.find((command) => command.name === "todo-command")
-    expect(todoCommand?.allowedTools).toEqual(["Question", "TodoWrite", "TodoRead"])
+    const planCommand = plugin.commands.find((command) => command.name === "workflows:plan")
+    expect(planCommand?.allowedTools).toEqual(["Question", "TodoWrite", "TodoRead"])
 
-    expect(plugin.mcpServers?.["remote-test"]?.url).toBe("https://example.com/mcp")
+    expect(plugin.mcpServers?.context7?.url).toBe("https://mcp.context7.com/mcp")
   })
 
   test("loads MCP servers from .mcp.json when manifest is empty", async () => {

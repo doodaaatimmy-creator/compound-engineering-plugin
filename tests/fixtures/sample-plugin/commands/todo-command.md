@@ -1,7 +1,7 @@
 ---
-name: todo-command
-description: Todo command
+name: workflows:plan
+description: Create a structured plan from requirements
 allowed-tools: Question, TodoWrite, TodoRead
 ---
 
-Todo command body.
+Workflows plan body.

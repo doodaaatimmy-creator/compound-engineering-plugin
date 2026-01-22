@@ -1,4 +1,5 @@
 import { defineCommand } from "citty"
+import { promises as fs } from "fs"
 import os from "os"
 import path from "path"
 import { loadClaudePlugin } from "../parsers/claude"
@@ -12,13 +13,13 @@ const permissionModes: PermissionMode[] = ["none", "broad", "from-commands"]
 export default defineCommand({
   meta: {
     name: "install",
-    description: "Install and convert a local Claude plugin",
+    description: "Install and convert a Claude plugin",
   },
   args: {
     plugin: {
       type: "positional",
       required: true,
-      description: "Plugin name (from plugins/) or a path",
+      description: "Plugin name or path",
     },
     to: {
       type: "string",
@@ -28,7 +29,6 @@ export default defineCommand({
     output: {
       type: "string",
       alias: "o",
-      default: path.join(os.homedir(), ".opencode"),
       description: "Output directory (project root)",
     },
     codexHome: {
@@ -71,63 +71,75 @@ export default defineCommand({
       throw new Error(`Unknown permissions mode: ${permissions}`)
     }
 
-    const pluginPath = await resolvePluginPath(String(args.plugin))
-    const plugin = await loadClaudePlugin(pluginPath)
-    const outputRoot = path.resolve(String(args.output))
-    const codexHome = resolveCodexHome(args.codexHome)
+    const resolvedPlugin = await resolvePluginPath(String(args.plugin))
 
-    const options = {
-      agentMode: String(args.agentMode) === "primary" ? "primary" : "subagent",
-      inferTemperature: Boolean(args.inferTemperature),
-      permissions: permissions as PermissionMode,
-    }
+    try {
+      const plugin = await loadClaudePlugin(resolvedPlugin.path)
+      const outputRoot = resolveOutputRoot(args.output)
+      const codexHome = resolveCodexRoot(args.codexHome)
 
-    const bundle = target.convert(plugin, options)
-    if (!bundle) {
-      throw new Error(`Target ${targetName} did not return a bundle.`)
-    }
-    const primaryOutputRoot = targetName === "codex" && codexHome ? codexHome : outputRoot
-    await target.write(primaryOutputRoot, bundle)
-    console.log(`Installed ${plugin.manifest.name} to ${primaryOutputRoot}`)
-
-    const extraTargets = parseExtraTargets(args.also)
-    const allTargets = [targetName, ...extraTargets]
-    for (const extra of extraTargets) {
-      const handler = targets[extra]
-      if (!handler) {
-        console.warn(`Skipping unknown target: ${extra}`)
-        continue
+      const options = {
+        agentMode: String(args.agentMode) === "primary" ? "primary" : "subagent",
+        inferTemperature: Boolean(args.inferTemperature),
+        permissions: permissions as PermissionMode,
       }
-      if (!handler.implemented) {
-        console.warn(`Skipping ${extra}: not implemented yet.`)
-        continue
-      }
-      const extraBundle = handler.convert(plugin, options)
-      if (!extraBundle) {
-        console.warn(`Skipping ${extra}: no output returned.`)
-        continue
-      }
-      const extraRoot = extra === "codex" && codexHome
-        ? codexHome
-        : path.join(outputRoot, extra)
-      await handler.write(extraRoot, extraBundle)
-      console.log(`Installed ${plugin.manifest.name} to ${extraRoot}`)
-    }
 
-    if (allTargets.includes("codex")) {
-      await ensureCodexAgentsFile(resolveCodexAgentsHome(codexHome))
+      const bundle = target.convert(plugin, options)
+      if (!bundle) {
+        throw new Error(`Target ${targetName} did not return a bundle.`)
+      }
+      const primaryOutputRoot = targetName === "codex" && codexHome ? codexHome : outputRoot
+      await target.write(primaryOutputRoot, bundle)
+      console.log(`Installed ${plugin.manifest.name} to ${primaryOutputRoot}`)
+
+      const extraTargets = parseExtraTargets(args.also)
+      const allTargets = [targetName, ...extraTargets]
+      for (const extra of extraTargets) {
+        const handler = targets[extra]
+        if (!handler) {
+          console.warn(`Skipping unknown target: ${extra}`)
+          continue
+        }
+        if (!handler.implemented) {
+          console.warn(`Skipping ${extra}: not implemented yet.`)
+          continue
+        }
+        const extraBundle = handler.convert(plugin, options)
+        if (!extraBundle) {
+          console.warn(`Skipping ${extra}: no output returned.`)
+          continue
+        }
+        const extraRoot = extra === "codex" && codexHome
+          ? codexHome
+          : path.join(outputRoot, extra)
+        await handler.write(extraRoot, extraBundle)
+        console.log(`Installed ${plugin.manifest.name} to ${extraRoot}`)
+      }
+
+      if (allTargets.includes("codex")) {
+        await ensureCodexAgentsFile(codexHome)
+      }
+    } finally {
+      if (resolvedPlugin.cleanup) {
+        await resolvedPlugin.cleanup()
+      }
     }
   },
 })
 
-async function resolvePluginPath(input: string): Promise<string> {
+type ResolvedPluginPath = {
+  path: string
+  cleanup?: () => Promise<void>
+}
+
+async function resolvePluginPath(input: string): Promise<ResolvedPluginPath> {
   const directPath = path.resolve(input)
-  if (await pathExists(directPath)) return directPath
+  if (await pathExists(directPath)) return { path: directPath }
 
   const pluginsPath = path.join(process.cwd(), "plugins", input)
-  if (await pathExists(pluginsPath)) return pluginsPath
+  if (await pathExists(pluginsPath)) return { path: pluginsPath }
 
-  throw new Error(`Could not find plugin at ${input}`)
+  return await resolveGitHubPluginPath(input)
 }
 
 function parseExtraTargets(value: unknown): string[] {
@@ -146,9 +158,8 @@ function resolveCodexHome(value: unknown): string | null {
   return path.resolve(expanded)
 }
 
-function resolveCodexAgentsHome(codexHome: string | null): string {
-  if (codexHome) return codexHome
-  return path.join(os.homedir(), ".codex")
+function resolveCodexRoot(value: unknown): string {
+  return resolveCodexHome(value) ?? path.join(os.homedir(), ".codex")
 }
 
 function expandHome(value: string): string {
@@ -157,4 +168,54 @@ function expandHome(value: string): string {
     return path.join(os.homedir(), value.slice(2))
   }
   return value
+}
+
+function resolveOutputRoot(value: unknown): string {
+  if (value && String(value).trim()) {
+    const expanded = expandHome(String(value).trim())
+    return path.resolve(expanded)
+  }
+  return path.join(os.homedir(), ".opencode")
+}
+
+async function resolveGitHubPluginPath(pluginName: string): Promise<ResolvedPluginPath> {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "compound-plugin-"))
+  const source = resolveGitHubSource()
+  try {
+    await cloneGitHubRepo(source, tempRoot)
+  } catch (error) {
+    await fs.rm(tempRoot, { recursive: true, force: true })
+    throw error
+  }
+
+  const pluginPath = path.join(tempRoot, "plugins", pluginName)
+  if (!(await pathExists(pluginPath))) {
+    await fs.rm(tempRoot, { recursive: true, force: true })
+    throw new Error(`Could not find plugin ${pluginName} in ${source}.`)
+  }
+
+  return {
+    path: pluginPath,
+    cleanup: async () => {
+      await fs.rm(tempRoot, { recursive: true, force: true })
+    },
+  }
+}
+
+function resolveGitHubSource(): string {
+  const override = process.env.COMPOUND_PLUGIN_GITHUB_SOURCE
+  if (override && override.trim()) return override.trim()
+  return "https://github.com/EveryInc/compound-engineering-plugin"
+}
+
+async function cloneGitHubRepo(source: string, destination: string): Promise<void> {
+  const proc = Bun.spawn(["git", "clone", "--depth", "1", source, destination], {
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  const exitCode = await proc.exited
+  const stderr = await new Response(proc.stderr).text()
+  if (exitCode !== 0) {
+    throw new Error(`Failed to clone ${source}. ${stderr.trim()}`)
+  }
 }

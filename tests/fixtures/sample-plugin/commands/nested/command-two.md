@@ -1,9 +1,9 @@
 ---
-name: command-two
-description: Command two
+name: plan_review
+description: Review a plan with multiple agents
 allowed-tools:
   - Read
   - Edit
 ---
 
-Command two body.
+Plan review body.

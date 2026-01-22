@@ -15,8 +15,8 @@ describe("convertClaudeToOpenCode", () => {
       permissions: "from-commands",
     })
 
-    expect(bundle.config.command?.["command-one"]).toBeDefined()
-    expect(bundle.config.command?.["command-two"]).toBeDefined()
+    expect(bundle.config.command?.["workflows:review"]).toBeDefined()
+    expect(bundle.config.command?.["plan_review"]).toBeDefined()
 
     const permission = bundle.config.permission as Record<string, string | Record<string, string>>
     expect(Object.keys(permission).sort()).toEqual([
@@ -50,7 +50,7 @@ describe("convertClaudeToOpenCode", () => {
     expect(permission.todowrite).toBe("allow")
     expect(permission.todoread).toBe("allow")
 
-    const agentFile = bundle.agents.find((agent) => agent.name === "agent-one")
+    const agentFile = bundle.agents.find((agent) => agent.name === "repo-research-analyst")
     expect(agentFile).toBeDefined()
     const parsed = parseFrontmatter(agentFile!.content)
     expect(parsed.data.mode).toBe("subagent")
@@ -64,13 +64,13 @@ describe("convertClaudeToOpenCode", () => {
       permissions: "none",
     })
 
-    const securityAgent = bundle.agents.find((agent) => agent.name === "security-reviewer")
+    const securityAgent = bundle.agents.find((agent) => agent.name === "security-sentinel")
     expect(securityAgent).toBeDefined()
     const parsed = parseFrontmatter(securityAgent!.content)
     expect(parsed.data.model).toBe("anthropic/claude-sonnet-4-20250514")
     expect(parsed.data.temperature).toBe(0.1)
 
-    const modelCommand = bundle.config.command?.["model-command"]
+    const modelCommand = bundle.config.command?.["workflows:work"]
     expect(modelCommand?.model).toBe("openai/gpt-4o")
   })
 
@@ -110,18 +110,16 @@ describe("convertClaudeToOpenCode", () => {
     })
 
     const mcp = bundle.config.mcp ?? {}
-    expect(mcp["local-test"]).toEqual({
+    expect(mcp["local-tooling"]).toEqual({
       type: "local",
-      command: ["echo", "hello"],
+      command: ["echo", "fixture"],
       environment: undefined,
       enabled: true,
     })
-    expect(mcp["remote-test"]).toEqual({
+    expect(mcp.context7).toEqual({
       type: "remote",
-      url: "https://example.com/mcp",
-      headers: {
-        Authorization: "Bearer token",
-      },
+      url: "https://mcp.context7.com/mcp",
+      headers: undefined,
       enabled: true,
     })
   })
@@ -166,7 +164,7 @@ describe("convertClaudeToOpenCode", () => {
       permissions: "none",
     })
 
-    const agentFile = bundle.agents.find((agent) => agent.name === "agent-one")
+    const agentFile = bundle.agents.find((agent) => agent.name === "repo-research-analyst")
     const parsed = parseFrontmatter(agentFile!.content)
     expect(parsed.data.mode).toBe("primary")
   })

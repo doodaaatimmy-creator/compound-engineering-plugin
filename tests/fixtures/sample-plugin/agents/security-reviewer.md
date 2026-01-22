@@ -1,7 +1,7 @@
 ---
-name: security-reviewer
-description: Security review agent
+name: security-sentinel
+description: Security audits and vulnerability assessments
 model: claude-sonnet-4-20250514
 ---
 
-Security agent body.
+Security sentinel body.

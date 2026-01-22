@@ -1,7 +1,7 @@
 ---
-name: pattern-command
-description: Pattern command
+name: report-bug
+description: Report a bug with structured context
 allowed-tools: Read(.env), Bash(git:*)
 ---
 
-Pattern command body.
+Report bug body.
