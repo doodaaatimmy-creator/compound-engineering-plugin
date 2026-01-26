@@ -124,10 +124,14 @@ Run all configured review agents in parallel. Example defaults:
 
 These agents are run ONLY when the PR matches specific criteria. Check the PR files list to determine if they apply:
 
-**If PR contains database migrations (db/migrate/*.rb files) or data backfills:**
+---
 
-14. Task data-migration-expert(PR content) - Validates ID mappings match production, checks for swapped values, verifies rollback safety
-15. Task deployment-verification-agent(PR content) - Creates Go/No-Go deployment checklist with SQL verification queries
+**MIGRATIONS: If PR contains database migrations or data backfills:**
+
+From `conditionalAgents.migrations` in config (defaults: `data-migration-expert`, `deployment-verification-agent`)
+
+- Task data-migration-expert(PR content) - Validates ID mappings match production, checks for swapped values, verifies rollback safety
+- Task deployment-verification-agent(PR content) - Creates Go/No-Go deployment checklist with SQL verification queries
 
 **When to run migration agents:**
 - PR includes files matching `db/migrate/*.rb`
@@ -139,6 +143,64 @@ These agents are run ONLY when the PR matches specific criteria. Check the PR fi
 **What these agents check:**
 - `data-migration-expert`: Verifies hard-coded mappings match production reality (prevents swapped IDs), checks for orphaned associations, validates dual-write patterns
 - `deployment-verification-agent`: Produces executable pre/post-deploy checklists with SQL queries, rollback procedures, and monitoring plans
+
+---
+
+**FRONTEND: If PR contains JavaScript/TypeScript or frontend files:**
+
+From `conditionalAgents.frontend` in config (defaults: `julik-frontend-races-reviewer`)
+
+- Task julik-frontend-races-reviewer(PR content) - Reviews for race conditions, async issues, and frontend performance problems
+
+**When to run frontend agents:**
+- PR includes files matching `*.js`, `*.ts`, `*.jsx`, `*.tsx`
+- PR includes files in `app/javascript/**`, `app/assets/javascripts/**`
+- PR includes files in `frontend/**`, `src/**` (for JS-heavy projects)
+- PR modifies Stimulus controllers, Turbo frames, or Hotwire components
+- PR includes CSS/SCSS changes with JavaScript interactions
+
+**What these agents check:**
+- `julik-frontend-races-reviewer`: Detects async race conditions, improper event handling, memory leaks, Turbo/Stimulus lifecycle issues, and JavaScript performance anti-patterns
+
+---
+
+**ARCHITECTURE: If PR contains significant structural changes:**
+
+From `conditionalAgents.architecture` in config (defaults: `architecture-strategist`, `pattern-recognition-specialist`)
+
+- Task architecture-strategist(PR content) - Evaluates architectural decisions, coupling, and system design
+- Task pattern-recognition-specialist(PR content) - Identifies anti-patterns, code smells, and architectural drift
+
+**When to run architecture agents:**
+- PR creates new directories or major new components
+- PR changes 10+ files across multiple directories
+- PR introduces new gems, packages, or dependencies
+- PR modifies core infrastructure (config, initializers, middleware)
+- PR refactors or moves significant code between modules
+- PR title/body mentions: refactor, restructure, architecture, reorganize
+
+**What these agents check:**
+- `architecture-strategist`: Evaluates separation of concerns, dependency direction, module boundaries, and long-term maintainability
+- `pattern-recognition-specialist`: Identifies recurring anti-patterns, code duplication across the PR, and violations of established project patterns
+
+---
+
+**DATA: If PR contains model or data-related changes:**
+
+From `conditionalAgents.data` in config (defaults: `data-integrity-guardian`)
+
+- Task data-integrity-guardian(PR content) - Reviews data integrity, validation, and query safety
+
+**When to run data agents:**
+- PR includes files matching `app/models/*.rb`, `app/models/**/*.rb`
+- PR includes concerns in `app/models/concerns/**`
+- PR modifies ActiveRecord associations, validations, or callbacks
+- PR includes changes to database queries or scopes
+- PR modifies serializers, decorators, or data transformation logic
+- PR title/body mentions: model, validation, association, query optimization
+
+**What these agents check:**
+- `data-integrity-guardian`: Validates referential integrity, N+1 query risks, proper use of transactions, data consistency across associations, and safe handling of nullable fields
 
 </conditional_agents>
 
