@@ -5,6 +5,41 @@ All notable changes to the compound-engineering plugin will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.29.0] - 2026-01-25
+
+### Added
+
+- **`/compound-engineering-setup` command** - Configure plugin agents and preferences
+  - Multi-step onboarding with AskUserQuestion for easy setup
+  - Auto-detects project type (Rails, Python, TypeScript, etc.)
+  - Three setup modes: Quick (smart defaults), Advanced (manual selection), Minimal
+  - Creates `.claude/compound-engineering.json` config file
+  - Supports global config (`~/.claude/`) or project-specific (`.claude/`)
+
+### Changed
+
+- **`/workflows:review`** - Now reads review agents from config file instead of hardcoding
+- **`/plan_review`** - Now reads plan review agents from config file
+- **`/workflows:work`** - References config for optional reviewer agents
+- **`/workflows:compound`** - References config for specialized agent invocation
+
+### Configuration
+
+New config file format (`.claude/compound-engineering.json`):
+```json
+{
+  "projectType": "rails",
+  "reviewAgents": ["kieran-rails-reviewer", "code-simplicity-reviewer", "security-sentinel"],
+  "planReviewAgents": ["kieran-rails-reviewer", "code-simplicity-reviewer"],
+  "conditionalAgents": {
+    "migrations": ["data-migration-expert", "deployment-verification-agent"],
+    "frontend": ["julik-frontend-races-reviewer"]
+  }
+}
+```
+
+---
+
 ## [2.28.0] - 2026-01-21
 
 ### Added

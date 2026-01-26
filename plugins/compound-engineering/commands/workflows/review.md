@@ -48,25 +48,54 @@ Ensure that the code is ready for analysis (either in worktree or on current bra
 
 </task_list>
 
+#### Load Review Configuration
+
+<config_loading>
+
+Check for configuration file:
+
+```bash
+# Check project config first, then global
+if [ -f .claude/compound-engineering.json ]; then
+  CONFIG_FILE=".claude/compound-engineering.json"
+elif [ -f ~/.claude/compound-engineering.json ]; then
+  CONFIG_FILE="~/.claude/compound-engineering.json"
+else
+  CONFIG_FILE=""
+fi
+```
+
+**If config exists:** Read agents from the configuration:
+- `reviewAgents` - Primary agents to run on every PR
+- `conditionalAgents` - Agents triggered by file patterns
+- `options.agentNative` - Whether to include agent-native-reviewer
+
+**If no config exists:** Prompt user:
+> "No configuration found. Run `/compound-engineering-setup` to configure agents, or use defaults for this review?"
+
+</config_loading>
+
 #### Parallel Agents to review the PR:
 
 <parallel_tasks>
 
-Run ALL or most of these agents at the same time:
+**From `reviewAgents` in config** (or defaults if no config):
 
-1. Task kieran-rails-reviewer(PR content)
-2. Task dhh-rails-reviewer(PR title)
-3. If turbo is used: Task rails-turbo-expert(PR content)
-4. Task git-history-analyzer(PR content)
-5. Task dependency-detective(PR content)
-6. Task pattern-recognition-specialist(PR content)
-7. Task architecture-strategist(PR content)
-8. Task code-philosopher(PR content)
-9. Task security-sentinel(PR content)
-10. Task performance-oracle(PR content)
-11. Task devops-harmony-analyst(PR content)
-12. Task data-integrity-guardian(PR content)
-13. Task agent-native-reviewer(PR content) - Verify new features are agent-accessible
+Run all configured review agents in parallel. Example defaults:
+- Task {first-configured-reviewer}(PR content)
+- Task {second-configured-reviewer}(PR content)
+- Task code-simplicity-reviewer(PR content)
+- Task security-sentinel(PR content)
+- Task performance-oracle(PR content)
+
+**Default reviewAgents (if no config):**
+- Rails: `kieran-rails-reviewer`, `dhh-rails-reviewer`, `code-simplicity-reviewer`, `security-sentinel`, `performance-oracle`
+- Python: `kieran-python-reviewer`, `code-simplicity-reviewer`, `security-sentinel`, `performance-oracle`
+- TypeScript: `kieran-typescript-reviewer`, `code-simplicity-reviewer`, `security-sentinel`, `performance-oracle`
+- General: `code-simplicity-reviewer`, `security-sentinel`, `performance-oracle`
+
+**If `options.agentNative` is true (default):**
+- Task agent-native-reviewer(PR content) - Verify new features are agent-accessible
 
 </parallel_tasks>
 
@@ -367,12 +396,8 @@ After creating all todo files, present comprehensive summary:
 
 ### Review Agents Used:
 
-- kieran-rails-reviewer
-- security-sentinel
-- performance-oracle
-- architecture-strategist
-- agent-native-reviewer
-- [other agents]
+- {List agents from config or defaults used}
+- (configured via `.claude/compound-engineering.json`)
 
 ### Next Steps:
 
